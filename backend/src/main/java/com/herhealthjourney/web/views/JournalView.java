@@ -37,7 +37,8 @@ public class JournalView extends VerticalLayout {
     public JournalView(JournalService journalService, UserRepository userRepository) {
         this.journalService = journalService;
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        this.currentUser = userRepository.findByUsername(username).or(() -> userRepository.findByEmail(username)).orElse(null);
+        this.currentUser = userRepository.findByUsername(username).or(() -> userRepository.findByEmail(username))
+                .orElse(null);
 
         setPadding(true);
         setSpacing(true);
@@ -45,7 +46,8 @@ public class JournalView extends VerticalLayout {
 
         H2 title = new H2("Private Health Journal");
         title.getStyle().set("color", "#54243D").set("margin-bottom", "4px");
-        Span sub = new Span("A safe, confidential space to document your physical thoughts, feelings, and body experiences.");
+        Span sub = new Span(
+                "A safe, confidential space to document your physical thoughts, feelings, and body experiences.");
         sub.getStyle().set("color", "#B66F86").set("font-size", "0.92rem");
 
         Button addBtn = new Button("New Entry", e -> openDialog(null));
@@ -98,12 +100,14 @@ public class JournalView extends VerticalLayout {
 
         TextField titleField = new TextField("Entry Title");
         titleField.setWidthFull();
-        if (existing != null) titleField.setValue(existing.title());
+        if (existing != null)
+            titleField.setValue(existing.title());
 
         TextArea contentArea = new TextArea("Journal Thoughts & Body Reflections");
         contentArea.setWidthFull();
         contentArea.setMinHeight("200px");
-        if (existing != null) contentArea.setValue(existing.content());
+        if (existing != null)
+            contentArea.setValue(existing.content());
 
         Checkbox privateBox = new Checkbox("Keep this entry strictly private", true);
 
@@ -115,12 +119,11 @@ public class JournalView extends VerticalLayout {
                 return;
             }
             JournalEntryDto dto = new JournalEntryDto(
-                existing != null ? existing.id() : null,
-                datePicker.getValue(),
-                titleField.getValue(),
-                contentArea.getValue(),
-                privateBox.getValue()
-            );
+                    existing != null ? existing.id() : null,
+                    datePicker.getValue(),
+                    titleField.getValue(),
+                    contentArea.getValue(),
+                    privateBox.getValue());
 
             if (existing == null) {
                 journalService.createEntry(currentUser, dto);
@@ -142,4 +145,3 @@ public class JournalView extends VerticalLayout {
         dialog.open();
     }
 }
-
